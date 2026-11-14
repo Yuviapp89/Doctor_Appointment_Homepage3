@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarePulse Health - Doctor's Appointment & Virtual Assistant</title>
+    <meta name="description" content="Advanced Doctor Appointment Booking & Intelligent Virtual Health Assistant.">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         Top Sticky Navigation Bar
+         ====================================================================== -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand-logo">
+                <span class="brand-icon">🏥</span>
+                <span>CarePulse<strong>Health</strong></span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#specialties">Specialties</a></li>
+                    <li><a href="#doctors">Doctors</a></li>
+                    <li><a href="#wellness">Wellness Hub</a></li>
+                    <li id="navMyAppointments" style="display: none;"><a href="#patientAppointmentsSection">My Appointments</a></li>
+                    <li id="navAdminDashboard" style="display: none;"><a href="#adminDashboardSection">Admin Dashboard</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-auth">
+                <span id="navRoleBadge" class="role-badge badge-guest">👤 Guest Mode</span>
+                <button id="navLoginBtn" class="btn btn-outline btn-sm" data-open-login>
+                    🔑 Switch Role / Log In
+                </button>
+                <button id="navLogoutBtn" class="btn btn-outline btn-sm" style="display: none;">
+                    🚪 Log Out
+                </button>
+                <button class="btn btn-primary btn-sm" data-open-chat>
+                    🤖 HealthBot
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ==================================================================
+             Hero Section
+             ================================================================== -->
+        <section id="home" class="hero-section">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-pill">
+                        <span>✨ Intelligent Clinical Triage & Scheduling</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Compassionate Care, <br>
+                        <span>Seamlessly Scheduled.</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Consult board-certified doctors, receive intelligent triage from HealthBot, 
+                        or explore non-prescriptive wellness advice tailored to your needs.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" data-open-chat data-prompt="Check symptoms & book appointment">
+                            🩺 Start Symptom Triage
+                        </button>
+                        <a href="#doctors" class="btn btn-outline">
+                            👨‍⚕️ View Specialists
+                        </a>
+                        <button class="btn btn-outline" data-open-login data-role="patient">
+                            🔑 Patient Login
+                        </button>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <h3>7+</h3>
+                            <p>Specialties</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>15k+</h3>
+                            <p>Patients Served</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>100%</h3>
+                            <p>Instant Memo</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>24/7</h3>
+                            <p>HealthBot AI</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Interactive Chat Preview Card -->
+                <div class="hero-card">
+                    <div class="hero-card-header">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.5rem;">🤖</span>
+                            <div>
+                                <h3 class="card-title">HealthBot Virtual Assistant</h3>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Multi-mode Clinical Engine</p>
+                            </div>
+                        </div>
+                        <span class="status-badge status-confirmed">Online</span>
+                    </div>
+
+                    <div class="quick-chat-box">
+                        <p><strong>Guest Mode:</strong> Instant wellness tips (no prescription issued).</p>
+                        <p><strong>Patient Mode:</strong> Symptom triage, specialist match, slot booking & downloadable memo!</p>
+                        <p><strong>Admin Mode:</strong> Full booking analytics & schedule management.</p>
+                    </div>
+
+                    <div style="margin-bottom: 12px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">
+                        ⚡ Try asking HealthBot right now:
+                    </div>
+                    <div class="prompt-chips">
+                        <button class="chip" data-open-chat data-prompt="How can I improve my sleep quality?">🌙 Sleep hygiene tips</button>
+                        <button class="chip" data-open-chat data-prompt="Check symptoms & book appointment">🩺 Book with Specialist</button>
+                        <button class="chip" data-open-chat data-prompt="Cancel my appointment">❌ Cancel Appointment</button>
+                        <button class="chip" data-open-chat data-prompt="Show system statistics">📊 Admin Statistics</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================================
+             Specialties Section
+             ================================================================== -->
+        <section id="specialties" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Clinical Excellence</span>
+                    <h2 class="section-title">Specialized Medical Departments</h2>
+                    <p class="section-subtitle">
+                        Our hospital brings together leading medical minds across key clinical disciplines.
+                    </p>
+                </div>
+
+                <div class="specialties-grid">
+                    <div class="specialty-card" data-open-chat data-prompt="I have chest pain and palpitations">
+                        <div class="specialty-icon">❤️</div>
+                        <h3>Cardiology</h3>
+                        <p>Heart rhythm evaluations, hypertension management, preventive cardiovascular wellness.</p>
+                        <div class="specialty-footer">
+                            <span>Consult Specialist →</span>
+                        </div>
+                    </div>
+
+                    <div class="specialty-card" data-open-chat data-prompt="I have a red skin rash and itching">
+                        <div class="specialty-icon">🧴</div>
+                        <h3>Dermatology</h3>
+                        <p>Clinical skin checks, chronic eczema, acne management, and dermatological therapies.</p>
+                        <div class="specialty-footer">
+                            <span>Consult Specialist →</span>
+                        </div>
+                    </div>
+
+                    <div class="specialty-card" data-open-chat data-prompt="I have severe migraine headaches and dizziness">
+                        <div class="specialty-icon">🧠</div>
+                        <h3>Neurology</h3>
+                        <p>Migraine assessment, neuropathic pain management, vestibular and dizziness evaluation.</p>
+                        <div class="specialty-footer">
+                            <span>Consult Specialist →</span>
+                        </div>
+                    </div>
+
+                    <div class="specialty-card" data-open-chat data-prompt="I have knee pain and joint stiffness">
+                        <div class="specialty-icon">🦴</div>
+                        <h3>Orthopedics</h3>
+                        <p>Joint health, spine rehabilitation, arthritis therapy, and musculoskeletal care.</p>
+                        <div class="specialty-footer">
+                            <span>Consult Specialist →</span>
+                        </div>
+                    </div>
+
+                    <div class="specialty-card" data-open-chat data-prompt="I have high fever and body chills">
+                        <div class="specialty-icon">🩺</div>
+                        <h3>General Medicine</h3>
+                        <p>Primary diagnosis, viral illnesses, fatigue, seasonal allergies, and health checkups.</p>
+                        <div class="specialty-footer">
+                            <span>Consult Specialist →</span>
+                        </div>
+                    </div>
+
+                    <div class="specialty-card" data-open-chat data-prompt="My child has a fever and cough">
+                        <div class="specialty-icon">👶</div>
+                        <h3>Pediatrics</h3>
+                        <p>Compassionate care for infants, children, and adolescents with growth monitoring.</p>
+                        <div class="specialty-footer">
+                            <span>Consult Specialist →</span>
+                        </div>
+                    </div>
+
+                    <div class="specialty-card" data-open-chat data-prompt="I have a sore throat and chronic sinus blockage">
+                        <div class="specialty-icon">👂</div>
+                        <h3>ENT Specialist</h3>
+                        <p>Otolaryngology care for sinus congestion, tonsillitis, ear aches, and tinnitus.</p>
+                        <div class="specialty-footer">
+                            <span>Consult Specialist →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================================
+             Doctors Catalog Section
+             ================================================================== -->
+        <section id="doctors" class="section" style="background: white;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Medical Staff</span>
+                    <h2 class="section-title">Meet Our Specialists</h2>
+                    <p class="section-subtitle">
+                        Select an experienced physician to view credentials or schedule an appointment slot.
+                    </p>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="filter-pills">
+                        <button class="filter-btn active" data-specialty="">All Specialists</button>
+                        <button class="filter-btn" data-specialty="Cardiology">Cardiology</button>
+                        <button class="filter-btn" data-specialty="Dermatology">Dermatology</button>
+                        <button class="filter-btn" data-specialty="Neurology">Neurology</button>
+                        <button class="filter-btn" data-specialty="Orthopedics">Orthopedics</button>
+                        <button class="filter-btn" data-specialty="General Medicine">General Medicine</button>
+                        <button class="filter-btn" data-specialty="Pediatrics">Pediatrics</button>
+                        <button class="filter-btn" data-specialty="ENT Specialist">ENT</button>
+                    </div>
+                </div>
+
+                <div id="doctorsGrid" class="doctors-grid">
+                    <!-- Populated dynamically via DoctorsCatalog.loadDoctors() -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================================
+             Wellness Hub Section (Guest Focus: Non-Prescriptive Advice)
+             ================================================================== -->
+        <section id="wellness" class="section wellness-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Vitality & Prevention</span>
+                    <h2 class="section-title">Daily Wellness & Preventive Health</h2>
+                    <p class="section-subtitle">
+                        Accessible to all guests without login. Evidence-based lifestyle and wellness tips.
+                    </p>
+                </div>
+
+                <div class="wellness-disclaimer-box">
+                    <div>
+                        <strong>🛡️ Medical Safety & Disclaimer Notice:</strong>
+                        <p>Our Guest Wellness Chatbot provides preventative lifestyle guidelines only. It does not prescribe medications, pharmaceutical drugs, or diagnostic treatments. For clinical care, please log in as a Patient.</p>
+                    </div>
+                    <button class="btn btn-outline btn-sm" data-open-login data-role="patient">
+                        Log In as Patient
+                    </button>
+                </div>
+
+                <div class="wellness-grid">
+                    <article class="wellness-card">
+                        <div>
+                            <span style="font-size: 1.8rem;">🌙</span>
+                            <h3>Sleep Hygiene</h3>
+                            <ul>
+                                <li>Consistent 7-9 hours sleep routine</li>
+                                <li>Disconnect screens 45 min prior</li>
+                                <li>Maintain dark, cool room temperature</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-outline btn-sm" data-open-chat data-prompt="How can I sleep better?">
+                            Ask HealthBot →
+                        </button>
+                    </article>
+
+                    <article class="wellness-card">
+                        <div>
+                            <span style="font-size: 1.8rem;">💧</span>
+                            <h3>Hydration Balance</h3>
+                            <ul>
+                                <li>2.5 to 3 liters clean water daily</li>
+                                <li>Pale yellow urine hydration check</li>
+                                <li>Drink warm water upon waking</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-outline btn-sm" data-open-chat data-prompt="How much water should I drink daily?">
+                            Ask HealthBot →
+                        </button>
+                    </article>
+
+                    <article class="wellness-card">
+                        <div>
+                            <span style="font-size: 1.8rem;">💺</span>
+                            <h3>Ergonomics & Posture</h3>
+                            <ul>
+                                <li>Monitor positioned at eye level</li>
+                                <li>20-20-20 screen relief rule</li>
+                                <li>Lumbar spine support cushion</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-outline btn-sm" data-open-chat data-prompt="Tips for healthy desk posture">
+                            Ask HealthBot →
+                        </button>
+                    </article>
+
+                    <article class="wellness-card">
+                        <div>
+                            <span style="font-size: 1.8rem;">🧘</span>
+                            <h3>Stress Management</h3>
+                            <ul>
+                                <li>4-7-8 deep diaphragmatic breathing</li>
+                                <li>15-minute nature walks</li>
+                                <li>Mindful evening wind-down</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-outline btn-sm" data-open-chat data-prompt="How can I reduce daily stress?">
+                            Ask HealthBot →
+                        </button>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================================
+             Patient Appointments Section (Visible when Patient is logged in)
+             ================================================================== -->
+        <section id="patientAppointmentsSection" class="section appointments-section" style="display: none;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Patient Portal</span>
+                    <h2 class="section-title">My Booked Appointments</h2>
+                    <p class="section-subtitle">
+                        View your active consultations, download booking confirmation memos, or request cancellations.
+                    </p>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Appointment ID</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Date</th>
+                                <th>Time Slot</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientAppointmentsBody">
+                            <!-- Populated dynamically via AppointmentsManager -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================================
+             Admin Dashboard Section (Visible when Admin is logged in)
+             ================================================================== -->
+        <section id="adminDashboardSection" class="section" style="display: none; background: #f8fafc;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Executive Oversight</span>
+                    <h2 class="section-title">Administrator Dashboard</h2>
+                    <p class="section-subtitle">
+                        Real-time clinical metrics, doctor workloads, and appointment booking management.
+                    </p>
+                </div>
+
+                <!-- KPI Metric Cards -->
+                <div class="admin-stats-grid">
+                    <div class="metric-card">
+                        <span>Total Appointments</span>
+                        <h3 id="statTotalAppts">0</h3>
+                    </div>
+                    <div class="metric-card">
+                        <span style="color: var(--success);">Confirmed Active</span>
+                        <h3 id="statConfirmedAppts" style="color: var(--success);">0</h3>
+                    </div>
+                    <div class="metric-card">
+                        <span style="color: var(--danger);">Cancelled</span>
+                        <h3 id="statCancelledAppts" style="color: var(--danger);">0</h3>
+                    </div>
+                    <div class="metric-card">
+                        <span>Today's Bookings</span>
+                        <h3 id="statTodayAppts">0</h3>
+                    </div>
+                    <div class="metric-card">
+                        <span>Unique Patients</span>
+                        <h3 id="statUniquePatients">0</h3>
+                    </div>
+                    <div class="metric-card">
+                        <span>Active Specialists</span>
+                        <h3 id="statTotalDoctors">0</h3>
+                    </div>
+                </div>
+
+                <!-- Graphical Visualizations -->
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h4>Appointments by Department</h4>
+                        <div id="chartSpecialtyBars" class="bar-chart">
+                            <!-- Populated by AdminDashboard -->
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Doctor Workload Distribution</h4>
+                        <div id="chartWorkloadBars" class="bar-chart">
+                            <!-- Populated by AdminDashboard -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments Management Table -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <input type="text" id="adminSearchInput" class="form-input" placeholder="Search patient, ID, or doctor..." style="width: 280px;">
+                        <select id="adminStatusFilter" class="form-select" style="width: 160px;">
+                            <option value="">All Statuses</option>
+                            <option value="CONFIRMED">Confirmed</option>
+                            <option value="CANCELLED">Cancelled</option>
+                            <option value="COMPLETED">Completed</option>
+                        </select>
+                    </div>
+                    <button id="adminRefreshBtn" class="btn btn-outline btn-sm">
+                        🔄 Refresh Data
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Date</th>
+                                <th>Slot</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminAppointmentsBody">
+                            <!-- Populated by AdminDashboard -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ======================================================================
+         Interactive Chatbot Floating Widget
+         ====================================================================== -->
+    <button id="chatbotLauncher" class="chatbot-launcher" title="Open HealthBot AI">
+        <div class="pulse-ring"></div>
+        <span>🤖</span>
+        <span class="chat-badge">AI</span>
+    </button>
+
+    <div id="chatbotWindow" class="chatbot-window hidden">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-avatar">🤖</div>
+                <div>
+                    <h4>HealthBot Virtual Care</h4>
+                    <span id="chatRoleIndicator" class="chat-role-indicator">Guest mode</span>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button id="resetChatBtn" class="chat-icon-btn" title="Reset Chat Session">🔄</button>
+                <button id="minimizeChatBtn" class="chat-icon-btn" title="Minimize Chat">➖</button>
+                <button id="closeChatBtn" class="chat-icon-btn" title="Close Chat">✕</button>
+            </div>
+        </div>
+
+        <div id="chatRoleBanner" class="chat-role-banner">
+            🌿 <span><strong>Wellness Mode:</strong> Lifestyle advice only. No prescriptions issued.</span>
+        </div>
+
+        <div id="chatMessages" class="chat-messages">
+            <!-- Messages rendered dynamically -->
+        </div>
+
+        <div id="quickRepliesContainer" class="quick-replies-container">
+            <!-- Quick prompt pills populated dynamically -->
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type your symptoms or wellness question..." autocomplete="off">
+            <button id="chatSendBtn" class="chat-send-btn" title="Send message">
+                ➤
+            </button>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         Advanced HTML5 Modals (<dialog>)
+         ====================================================================== -->
+
+    <!-- Login Modal -->
+    <dialog id="loginModal">
+        <div class="modal-header">
+            <h3>CarePulse Access & Authentication</h3>
+            <button id="closeLoginModal" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="role-tabs">
+                <button class="role-tab-btn active" data-role-tab="guest">Guest</button>
+                <button class="role-tab-btn" data-role-tab="patient">Patient</button>
+                <button class="role-tab-btn" data-role-tab="admin">Admin</button>
+            </div>
+
+            <div id="credentialsHint" class="credentials-hint">
+                ✨ <strong>Guest Access:</strong> No username or password required. Instantly explore wellness advice!
+            </div>
+
+            <div id="loginErrorAlert" style="display: none; background: var(--danger-light); color: var(--danger); padding: 10px; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: 14px;">
+            </div>
+
+            <form id="loginForm">
+                <div id="credentialsInputs" style="display: none;">
+                    <div class="form-group">
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" class="form-input" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="Enter password">
+                    </div>
+                </div>
+
+                <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width: 100%;">
+                    Continue as Guest
+                </button>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- Memo Preview & Print Modal -->
+    <dialog id="memoModal" style="max-width: 750px; height: 85vh;">
+        <div class="modal-header">
+            <h3>Booking Confirmation Memo Slip</h3>
+            <button id="closeMemoModal" class="modal-close-btn">&times;</button>
+        </div>
+        <div style="height: calc(100% - 70px); padding: 0;">
+            <iframe id="memoFrame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </dialog>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer"></div>
+
+    <!-- ======================================================================
+         Footer
+         ====================================================================== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="brand-logo" style="color: white; margin-bottom: 12px;">
+                    <span>🏥 CarePulse Health</span>
+                </div>
+                <p>Advanced clinical consultation, intelligent triage, and seamless appointment booking across premier medical specialties.</p>
+                <p style="margin-top: 10px; font-size: 0.85rem; color: #64748b;">Emergency Helpline: +1 (800) 555-CARE (24/7)</p>
+            </div>
+            <div class="footer-col">
+                <h4>Specialties</h4>
+                <ul>
+                    <li><a href="#specialties">Cardiology</a></li>
+                    <li><a href="#specialties">Dermatology</a></li>
+                    <li><a href="#specialties">Neurology</a></li>
+                    <li><a href="#specialties">Orthopedics</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Patient Portal</h4>
+                <ul>
+                    <li><a href="#" data-open-login data-role="patient">Patient Login</a></li>
+                    <li><a href="#" data-open-chat data-prompt="Check symptoms">Symptom Checker</a></li>
+                    <li><a href="#" data-open-chat data-prompt="Cancel appointment">Cancel Booking</a></li>
+                    <li><a href="#" data-open-login data-role="admin">Admin Portal</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Credentials Quick Reference</h4>
+                <div style="font-size: 0.82rem; line-height: 1.6; background: #1e293b; padding: 12px; border-radius: 8px;">
+                    <div><strong>Guest:</strong> No credentials needed</div>
+                    <div><strong>Patient:</strong> <code>patient</code> / <code>healthcare</code></div>
+                    <div><strong>Admin:</strong> <code>admin</code> / <code>admin</code></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 CarePulse Health Systems. All rights reserved. Built with modular Python & Advanced HTML5.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
