@@ -17,8 +17,8 @@ from backend.chatbot_engine import ChatbotEngine
 from backend.api_handler import APIHandler
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PORT = 8000
-
+##PORT = 8000
+PORT = int(os.environ.get("PORT", "8000"))
 
 class HealthcareRequestHandler(SimpleHTTPRequestHandler):
     # Injected dependencies
@@ -108,7 +108,8 @@ def run_server(port: int = PORT):
 
     HealthcareRequestHandler.api_handler = api_handler
 
-    server_address = ("", port)
+    ##server_address = ("", port)
+    server_address = ("0.0.0.0", port)
     httpd = ThreadingHTTPServer(server_address, HealthcareRequestHandler)
     print(f"✨ CarePulse Healthcare Web App running at http://localhost:{port}/")
     print("📋 Credentials for Testing:")
