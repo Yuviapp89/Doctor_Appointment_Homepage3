@@ -75,6 +75,39 @@ class TestBackend(unittest.TestCase):
         self.assertIn("sleep", res.lower())
         self.assertIn("wellness tip", res.lower())
 
+    def test_guest_relevant_wellness_interests(self):
+        # Hydration interest
+        res_water = TriageEngine.get_guest_wellness_response("How much water should I drink daily?")
+        self.assertIn("hydration", res_water.lower())
+        self.assertIn("liters", res_water.lower())
+
+        # Posture/desk interest
+        res_posture = TriageEngine.get_guest_wellness_response("Tips for desk ergonomics and chair posture")
+        self.assertIn("posture", res_posture.lower())
+        self.assertIn("20-20-20", res_posture)
+
+        # Stress interest
+        res_stress = TriageEngine.get_guest_wellness_response("How to reduce anxiety and stress with meditation?")
+        self.assertIn("stress", res_stress.lower())
+        self.assertIn("4-7-8", res_stress)
+
+    def test_guest_symptom_redirect_to_patient(self):
+        # When a guest reports symptoms, bot should instruct user to log in as Patient
+        guest_user = self.auth.login(role="guest")[2]
+        symptom_inputs = [
+            "I have severe chest pain and heart palpitations",
+            "I have an itchy red skin rash spreading on my body",
+            "I'm feeling sick with high fever and chills",
+            "My knee joint hurts when walking"
+        ]
+        for s_input in symptom_inputs:
+            resp = self.chatbot.process_message("guest_test_sess", guest_user, s_input)
+            self.assertEqual(resp.state, "GUEST_SYMPTOM_REDIRECT")
+            self.assertIn("Clinical Symptoms Detected", resp.reply)
+            self.assertIn("patient", resp.reply.lower())
+            self.assertIn("healthcare", resp.reply.lower())
+            self.assertIn("Log In as Patient", resp.quick_replies)
+
     def test_guest_prescription_guardrail(self):
         prescription_queries = [
             "Can you prescribe me some antibiotics for my sore throat?",

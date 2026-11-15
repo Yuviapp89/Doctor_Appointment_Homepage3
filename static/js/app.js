@@ -303,15 +303,125 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
             const role = AppState.role;
 
             if (role === "guest") {
-                if (msg.includes("prescribe") || msg.includes("medicine") || msg.includes("pill") || msg.includes("antibiotic")) {
+                // 1. Strict prescription guardrail
+                if (msg.includes("prescribe") || msg.includes("medicine") || msg.includes("pill") || msg.includes("antibiotic") || msg.includes("dosage") || msg.includes("drug")) {
                     return {
-                        reply: "⚠️ **Important Medical Disclaimer & Prescription Policy:**\n\nAs a virtual assistant in **Guest Mode**, I am strictly prohibited from prescribing medications or recommending pharmaceutical drugs.\n\n🩺 Please consult a licensed medical physician or **Log In as a Patient** (Credentials: `patient` / `healthcare`) to book an appointment with our specialists!",
+                        reply: "⚠️ **Important Medical Disclaimer & Prescription Policy:**\n\nAs a virtual assistant in **Guest Mode**, I am strictly prohibited from prescribing medications, pharmaceutical drugs, or calculating dosages.\n\n🩺 **What you should do:**\n• For medical diagnosis, clinical evaluations, and authorized prescriptions, please consult a licensed medical doctor.\n• You can **Log In as a Patient** (Credentials: `patient` / `healthcare`) to book an appointment with our specialist physicians!",
                         state: "GUEST_CHAT",
-                        quick_replies: ["Tips for better sleep", "Hydration guidelines", "Healthy desk posture", "Log in as Patient"]
+                        quick_replies: ["Log In as Patient", "Tips for better sleep", "Healthy desk posture", "Hydration guidelines"]
                     };
                 }
+
+                // 2. Clinical symptom detection in Guest mode -> Redirect to Patient login!
+                const symptomWords = [
+                    "pain", "hurts", "ache", "aching", "sore", "chest pain", "chest tightness", "palpitation", "palpitations", "racing heart",
+                    "shortness of breath", "breathless", "fever", "chills", "cough", "coughing", "throat", "sore throat",
+                    "rash", "skin rash", "itch", "itchy", "redness", "eczema", "acne", "hives", "spots", "blister",
+                    "headache", "migraine", "dizziness", "dizzy", "vertigo", "lightheaded", "numbness", "tingling",
+                    "knee", "joint", "back pain", "lower back", "spine", "stiffness", "swelling", "swollen",
+                    "stomach", "nausea", "vomit", "vomiting", "diarrhea", "sinus", "ear pain", "earache",
+                    "sick", "unwell", "infection", "cramp", "cramps"
+                ];
+
+                const foundSymptom = symptomWords.some(w => msg.includes(w));
+                if (foundSymptom) {
+                    let recDept = "General Medicine";
+                    if (msg.includes("chest") || msg.includes("heart") || msg.includes("palpitation") || msg.includes("breath")) recDept = "Cardiology";
+                    else if (msg.includes("skin") || msg.includes("rash") || msg.includes("itch") || msg.includes("acne") || msg.includes("eczema")) recDept = "Dermatology";
+                    else if (msg.includes("headache") || msg.includes("migraine") || msg.includes("dizzy") || msg.includes("vertigo") || msg.includes("numb")) recDept = "Neurology";
+                    else if (msg.includes("knee") || msg.includes("joint") || msg.includes("back") || msg.includes("spine")) recDept = "Orthopedics";
+                    else if (msg.includes("ear") || msg.includes("throat") || msg.includes("sinus")) recDept = "ENT Specialist";
+                    else if (msg.includes("baby") || msg.includes("child")) recDept = "Pediatrics";
+
+                    return {
+                        reply: `🩺 **Clinical Symptoms Detected:**\n\nIt sounds like you are experiencing medical symptoms that require clinical evaluation by our **${recDept}** department.\n\n🔒 **Patient Login Required:**\nIn **Guest Mode**, I can only provide general lifestyle and wellness advice. I cannot clinically triage symptoms or confirm specialist appointments without patient verification.\n\n👉 **Please Log In with standard Patient credentials to proceed:**\n• **Username:** \`patient\`\n• **Password:** \`healthcare\`\n\nOnce logged in, HealthBot will conduct a complete symptom assessment and book your specialist appointment immediately!`,
+                        state: "GUEST_SYMPTOM_REDIRECT",
+                        quick_replies: ["Log In as Patient", "Switch to Patient Mode", "Tips for better sleep", "Healthy desk posture"]
+                    };
+                }
+
+                // 3. Tailored wellness topics based on user's actual interest
+                if (msg.includes("sleep") || msg.includes("insomnia") || msg.includes("tired") || msg.includes("wake") || msg.includes("bedtime") || msg.includes("rest")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Sleep Hygiene & Restorative Rest**\n\n• Aim for 7 to 9 hours of consistent, restorative sleep nightly.\n• Disconnect blue-light screens (phones, laptops) at least 45 minutes before bed.\n• Keep your bedroom cool (around 65°F / 18°C) and pitch-dark.\n• Avoid heavy dinners or caffeine within 5-6 hours of sleeping.\n• Try a relaxing evening ritual: light reading, meditation, or warm herbal tea.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Hydration guidelines", "Stress relief techniques", "Healthy desk posture"]
+                    };
+                }
+                if (msg.includes("water") || msg.includes("hydrate") || msg.includes("hydration") || msg.includes("drink") || msg.includes("thirsty") || msg.includes("fluid")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Daily Cellular Hydration**\n\n• Drink 2.5 to 3 liters (roughly 8-10 glasses) of clean water spread evenly throughout your day.\n• Start your morning with 1-2 glasses of warm water to awaken your digestive system.\n• Check urine color as a natural indicator: pale light-straw yellow indicates good hydration.\n• Increase electrolytes during warm weather or vigorous workouts.\n• Naturally flavor water with fresh lemon, cucumber slices, or mint.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Nutrition & diet tips", "Tips for better sleep", "Daily physical fitness"]
+                    };
+                }
+                if (msg.includes("food") || msg.includes("diet") || msg.includes("nutrition") || msg.includes("eat") || msg.includes("meal") || msg.includes("weight") || msg.includes("sugar") || msg.includes("protein")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Nutritional Vitality & Balanced Eating**\n\n• Aim for the 'Plate Rule': 50% colorful vegetables/fruits, 25% lean protein, and 25% whole grains.\n• Prioritize whole, minimally processed foods over packaged snacks with high sodium or refined oils.\n• Incorporate healthy omega-3 fats from olive oil, avocados, flaxseeds, and walnuts.\n• Practice mindful eating: chew slowly, eat without screens, and stop when 80% full.\n• Add fiber-rich lentils, chickpeas, and beans for steady energy and blood sugar balance.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Digestive wellness", "Hydration guidelines", "Energy & morning stamina"]
+                    };
+                }
+                if (msg.includes("stress") || msg.includes("anxiety") || msg.includes("calm") || msg.includes("relax") || msg.includes("breathe") || msg.includes("meditation") || msg.includes("mindful") || msg.includes("burnout")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Stress Reduction & Mental Equilibrium**\n\n• Practice the 4-7-8 breathing method: inhale 4s, hold 7s, exhale slowly 8s.\n• Take a 10-15 minute mindful outdoor walk in natural daylight to lower cortisol.\n• Establish firm digital boundaries: mute non-urgent work notifications in the evening.\n• Write down 3 things you are grateful for each evening to foster positivity.\n• Dedicate 10 minutes daily to mindfulness meditation or progressive muscle relaxation.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Tips for better sleep", "Healthy desk posture", "Daily physical fitness"]
+                    };
+                }
+                if (msg.includes("posture") || msg.includes("desk") || msg.includes("chair") || msg.includes("sitting") || msg.includes("ergonomic") || msg.includes("spine")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Ergonomics & Spinal Alignment**\n\n• Position your computer screen so the top third is at eye level, about an arm's length away.\n• Practice the 20-20-20 rule: every 20 minutes, look at an object 20 feet away for 20 seconds.\n• Sit with hips, knees, and elbows at roughly 90-degree angles with feet resting flat.\n• Use a small lumbar cushion to support your lower back curve.\n• Stand up, roll your shoulders back, and gently stretch your hamstrings every 45-60 minutes.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Eye health & screen relief", "Joint care & stretching", "Stress relief techniques"]
+                    };
+                }
+                if (msg.includes("exercise") || msg.includes("workout") || msg.includes("fitness") || msg.includes("gym") || msg.includes("walk") || msg.includes("run") || msg.includes("steps")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Daily Movement & Cardiovascular Fitness**\n\n• Aim for at least 150 minutes of moderate aerobic activity (e.g. brisk walking) weekly.\n• Include bodyweight or resistance training (squats, lunges, push-ups) 2-3 times per week.\n• Always warm up with dynamic movement before workouts and cool down with gentle stretches.\n• Take the stairs whenever possible to increase natural NEAT (non-exercise activity thermogenesis).\n• Listen to your body and schedule adequate rest days between strenuous sessions.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Joint care & stretching", "Nutrition & diet tips", "Energy & morning stamina"]
+                    };
+                }
+                if (msg.includes("eye") || msg.includes("screen") || msg.includes("vision") || msg.includes("blue light")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Digital Eye Hygiene & Screen Relief**\n\n• Follow the 20-20-20 rule to rest your ciliary eye muscles.\n• Blink intentionally: screen time drops our blink rate by more than 50%, causing dryness.\n• Adjust monitor brightness to match ambient lighting and eliminate glare.\n• Use warm night-shift filters on digital screens after sunset.\n• Keep screens 20-26 inches away from your face at eye level.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Healthy desk posture", "Tips for better sleep", "Stress relief techniques"]
+                    };
+                }
+                if (msg.includes("immune") || msg.includes("immunity") || msg.includes("cold prevention") || msg.includes("flu") || msg.includes("vitamin")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Immune Resilience & Preventative Habits**\n\n• Wash hands thoroughly with soap for at least 20 seconds regularly.\n• Ensure adequate dietary Vitamin C (citrus, bell peppers) and Zinc (nuts, pumpkin seeds).\n• Get 15-20 minutes of daylight exposure to support natural Vitamin D levels.\n• Prioritize 7-8 hours of sleep; immune cytokines are synthesized during deep rest.\n• Manage chronic stress, as high cortisol reduces lymphocyte activity.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Nutrition & diet tips", "Hydration guidelines", "Tips for better sleep"]
+                    };
+                }
+                if (msg.includes("energy") || msg.includes("morning") || msg.includes("slump") || msg.includes("stamina")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Daily Stamina & Natural Energy**\n\n• Step outside in natural sunlight within 30 minutes of waking to set your circadian clock.\n• Drink 500ml of room-temperature water upon waking to rehydrate cells.\n• Delay caffeine for 60-90 minutes after waking to allow natural adenosine clearance.\n• Beat the 2 PM afternoon slump with a 10-minute brisk walk and cold water.\n• Avoid refined sugar spikes that lead to rapid energy crashes.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Tips for better sleep", "Hydration guidelines", "Daily physical fitness"]
+                    };
+                }
+                if (msg.includes("gut") || msg.includes("digestion") || msg.includes("bloat") || msg.includes("fiber")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Digestive Vitality & Gut Health**\n\n• Aim for 25-35 grams of daily fiber from vegetables, legumes, oats, and berries.\n• Include naturally fermented foods like yogurt, kefir, or kimchi for probiotic flora.\n• Chew each bite thoroughly—digestion begins with saliva enzymes in the mouth.\n• Avoid lying down immediately after eating; wait at least 2-3 hours before bed.\n• Hydrate between meals rather than drinking huge volumes while eating.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Nutrition & diet tips", "Hydration guidelines", "Stress relief techniques"]
+                    };
+                }
+                if (msg.includes("joint") || msg.includes("stretch") || msg.includes("mobility") || msg.includes("flexibility")) {
+                    return {
+                        reply: "🌿 **Wellness Tip: Joint Mobility & Functional Flexibility**\n\n• Practice 5-10 minutes of gentle dynamic joint circles (ankles, hips, shoulders) in the morning.\n• Avoid static sitting for longer than an hour—stand up and stretch hip flexors.\n• Keep well-hydrated; cartilage and joint synovial fluid require adequate water volume.\n• Engage in low-impact activities like swimming or cycling that protect joint surfaces.\n• Wear supportive footwear designed for your daily walking routines.",
+                        state: "GUEST_CHAT",
+                        quick_replies: ["Healthy desk posture", "Daily physical fitness", "Hydration guidelines"]
+                    };
+                }
+
+                // 4. Contextual fallback acknowledging user's input topic
                 return {
-                    reply: "🌿 **Wellness Guidance (Guest Mode):**\n\n• Maintain 7-9 hours of consistent sleep.\n• Drink 8-10 glasses of water daily.\n• Take a brisk 30-minute daily walk.\n• Practice 4-7-8 deep breathing to relieve stress.\n\n*(Log in as Patient to consult our specialist doctors!)*",
+                    reply: "🌿 **Personalized Wellness Advice:**\n\nHere are core evidence-based wellness practices tailored for everyday vitality:\n\n• **Consistent Hydration:** Drink 2.5-3 liters of fresh water daily to boost cellular metabolism.\n• **Restorative Sleep:** Maintain 7-9 hours of consistent sleep schedule to support hormonal recovery.\n• **Balanced Whole Foods:** Center meals around antioxidant-rich vegetables, lean proteins, and fiber.\n• **Daily Movement:** A 30-minute brisk walk daily reduces stress and supports cardiovascular fitness.\n• **Ergonomic Breaks:** Stretch your shoulders and back every 45-60 minutes if working at a desk.\n\n*(Guest Mode provides non-prescriptive lifestyle tips only. If you are unwell or wish to see a specialist, please log in as a Patient!)*",
                     state: "GUEST_CHAT",
                     quick_replies: ["Tips for better sleep", "Hydration guidelines", "Healthy desk posture", "Stress relief techniques"]
                 };
@@ -908,6 +1018,11 @@ const ChatBot = {
             pill.className = "quick-reply-pill";
             pill.textContent = replyText;
             pill.addEventListener("click", () => {
+                const lowerText = replyText.toLowerCase();
+                if (lowerText.includes("log in as patient") || lowerText.includes("switch to patient") || lowerText.includes("switch role")) {
+                    AuthManager.openLoginModal("patient");
+                    return;
+                }
                 this.sendUserMessage(replyText);
             });
             this.quickRepliesContainer.appendChild(pill);

@@ -129,7 +129,7 @@ class ChatbotEngine:
     def _handle_guest_message(self, session: ChatSession, message: str) -> ChatResponse:
         lower = message.lower()
 
-        # If guest asks to book an appointment
+        # 1. If guest asks to book an appointment directly
         if any(w in lower for w in ["book", "appointment", "schedule", "doctor", "consultation", "see a doctor"]):
             return ChatResponse(
                 reply=(
@@ -143,25 +143,29 @@ class ChatbotEngine:
                 ),
                 state="GUEST_INFO",
                 quick_replies=[
-                    "Sleep tips",
+                    "Log In as Patient",
+                    "Tips for better sleep",
                     "Hydration guidelines",
                     "Healthy desk posture",
                     "Stress relief techniques"
                 ]
             )
 
-        # Non-prescriptive wellness response with strict guardrail
-        wellness_reply = TriageEngine.get_guest_wellness_response(message)
+        # 2. Process query via TriageEngine (checks prescriptions, symptoms, or tailored wellness topics)
+        reply_text, quick_replies, intent_type = TriageEngine.get_guest_response(message)
+
+        # If symptom details were provided by guest, prompt for patient login
+        if intent_type == "symptom_redirect_to_patient":
+            return ChatResponse(
+                reply=reply_text,
+                state="GUEST_SYMPTOM_REDIRECT",
+                quick_replies=quick_replies
+            )
+
         return ChatResponse(
-            reply=wellness_reply,
+            reply=reply_text,
             state="GUEST_CHAT",
-            quick_replies=[
-                "Tips for better sleep",
-                "Hydration guidelines",
-                "Healthy desk posture",
-                "Stress relief techniques",
-                "Nutrition & diet tips"
-            ]
+            quick_replies=quick_replies
         )
 
     # =========================================================================

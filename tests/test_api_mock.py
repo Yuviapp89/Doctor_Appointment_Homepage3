@@ -97,6 +97,21 @@ class TestAPIInMemory(unittest.TestCase):
         self.assertIn("Disclaimer", guard_res["reply"])
         self.assertIn("strictly prohibited from prescribing", guard_res["reply"])
 
+        # 6b. Guest Symptom Redirect to Patient Login
+        status, _, body = self.api.handle_request(
+            method="POST",
+            path="/api/chat",
+            query_params={},
+            body_data={"message": "I have severe chest pain and breathlessness", "token": guest_token, "session_id": "s1"},
+            headers={}
+        )
+        self.assertEqual(status, 200)
+        symp_res = json.loads(body.decode("utf-8"))
+        self.assertIn("Clinical Symptoms Detected", symp_res["reply"])
+        self.assertIn("Cardiology", symp_res["reply"])
+        self.assertIn("patient", symp_res["reply"].lower())
+        self.assertIn("Log In as Patient", symp_res["quick_replies"])
+
         # 7. Patient Multi-turn Triage & Booking
         session_id = "patient_sess_full"
         # Start symptoms triage
