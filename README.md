@@ -70,8 +70,6 @@ The project adheres to modular design, separating domain models, data persistenc
 │   └── test_api_mock.py     # In-memory API integration test suite
 ├── index.html               # Main advanced HTML5 single-page application
 ├── server.py                # Multi-threaded HTTP server hosting frontend and API
-├── streamlit_app.py         # Native Streamlit deployment application
-├── requirements.txt         # Dependencies for Streamlit deployment
 └── README.md                # Documentation and guide
 ```
 
@@ -79,27 +77,18 @@ The project adheres to modular design, separating domain models, data persistenc
 
 ## 🚀 How to Run
 
-### Option A: Streamlit Web App (Local or Cloud Deployment)
+### Step 1: Start the Server
+Run the application using Python 3:
+```bash
+python server.py
+```
+By default, the server listens at **`http://localhost:8000/`**.
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. **Launch Streamlit:**
-   ```bash
-   streamlit run streamlit_app.py
-   ```
-3. Open the browser at **`http://localhost:8501`**.
-
----
-
-### Option B: Advanced HTML5 + Python Server
-
-1. **Start the server:**
-   ```bash
-   python server.py
-   ```
-2. Open the browser at **`http://localhost:8000/`**.
+### Step 2: Open in Your Browser
+Navigate to:
+```
+http://localhost:8000/
+```
 
 ### Step 3: Run the Test Suites
 Run the automated test suites:
