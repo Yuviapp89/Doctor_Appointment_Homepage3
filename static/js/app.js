@@ -86,6 +86,136 @@ const LocalFallbackEngine = {
         return initial;
     },
 
+    getTextMemo(appointmentId) {
+        const appts = this.getStoredAppointments();
+        const a = appts.find(item => item.id === appointmentId) || {
+            id: appointmentId,
+            patient_name: "Patient John Doe",
+            patient_username: "patient",
+            patient_contact: "+1 (555) 234-5678",
+            doctor_name: "Dr. Sarah Lin",
+            specialty: "Cardiology",
+            date: "2026-11-20",
+            time_slot: "10:00 AM",
+            symptoms: "Cardiovascular evaluation",
+            conditions: "None",
+            status: "CONFIRMED",
+            created_at: new Date().toISOString()
+        };
+
+        const divider = "=".repeat(68);
+        const subdivider = "-".repeat(68);
+        return `
+${divider}
+       CAREPULSE HEALTHCARE SYSTEM - APPOINTMENT CONFIRMATION MEMO
+${divider}
+
+MEMO REFERENCE NO : ${a.id}
+ISSUED ON         : ${a.created_at.replace("T", " ").substring(0, 19)}
+STATUS            : [ ${a.status} ]
+
+PATIENT DETAILS:
+  • Full Name     : ${a.patient_name}
+  • Username      : ${a.patient_username}
+  • Contact Phone : ${a.patient_contact}
+
+APPOINTMENT SCHEDULE:
+  • Doctor Name   : ${a.doctor_name}
+  • Department    : ${a.specialty}
+  • Date          : ${a.date}
+  • Time Slot     : ${a.time_slot}
+  • Clinic Venue  : CarePulse Health Tower, Level 3, Suite 304
+
+TRIAGE & CLINICAL NOTES:
+  • Symptoms      : ${a.symptoms || 'General Checkup'}
+  • Conditions    : ${a.conditions || 'None reported'}
+
+${subdivider}
+IMPORTANT PATIENT INSTRUCTIONS:
+  1. Please check in at Reception Counter A at least 15 minutes before
+     your scheduled slot (${a.time_slot}).
+  2. Bring a valid government-issued photo ID and insurance card.
+  3. Carry previous medical records, lab reports, or current prescriptions.
+  4. To cancel or reschedule, ask HealthBot or call CarePulse Helpdesk.
+${subdivider}
+
+VERIFICATION TOKEN: ${a.id}#VERIFIED_OFFICIAL_BOOKING
+${divider}
+        Thank you for choosing CarePulse Healthcare. Wishing you good health!
+${divider}
+`.trim();
+    },
+
+    getHtmlMemo(appointmentId) {
+        const appts = this.getStoredAppointments();
+        const a = appts.find(item => item.id === appointmentId) || {
+            id: appointmentId,
+            patient_name: "Patient John Doe",
+            patient_username: "patient",
+            patient_contact: "+1 (555) 234-5678",
+            doctor_name: "Dr. Sarah Lin",
+            specialty: "Cardiology",
+            date: "2026-11-20",
+            time_slot: "10:00 AM",
+            symptoms: "Cardiovascular evaluation",
+            conditions: "None",
+            status: "CONFIRMED",
+            created_at: new Date().toISOString()
+        };
+
+        const statusColor = a.status === "CONFIRMED" ? "#10b981" : "#ef4444";
+        return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:#f8fafc; color:#1e293b; padding:20px; margin:0; }
+.card { background:white; border:1px solid #e2e8f0; border-radius:12px; padding:28px; max-width:640px; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.06); }
+.header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #0284c7; padding-bottom:14px; margin-bottom:18px; }
+.badge { background:${statusColor}; color:white; padding:4px 12px; border-radius:20px; font-weight:700; font-size:12px; }
+.row { display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px; }
+.section-title { font-weight:700; font-size:14px; color:#0f172a; border-bottom:1px solid #f1f5f9; padding-bottom:4px; margin:18px 0 10px; text-transform:uppercase; }
+.instructions { background:#f0f9ff; border-left:4px solid #0284c7; padding:12px; border-radius:4px; font-size:13px; margin-top:18px; line-height:1.5; }
+.print-btn { background:#0284c7; color:white; border:none; padding:8px 18px; border-radius:6px; font-weight:600; cursor:pointer; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div>
+      <h2 style="margin:0; color:#0369a1;">🏥 CarePulse Health Hospital</h2>
+      <small style="color:#64748b;">Official Booking Confirmation Slip</small>
+    </div>
+    <span class="badge">${a.status}</span>
+  </div>
+  <div style="background:#f1f5f9; padding:8px 12px; border-radius:6px; margin-bottom:14px; font-size:13px;">
+    <strong>Appointment Ref:</strong> ${a.id} | <strong>Issued:</strong> ${a.created_at.replace("T", " ").substring(0, 19)}
+  </div>
+  <div class="section-title">Patient Profile</div>
+  <div class="row"><span>Patient Name:</span> <strong>${a.patient_name}</strong></div>
+  <div class="row"><span>Username:</span> <strong>${a.patient_username}</strong></div>
+  <div class="row"><span>Contact:</span> <strong>${a.patient_contact}</strong></div>
+  <div class="section-title">Schedule & Doctor</div>
+  <div class="row"><span>Attending Specialist:</span> <strong>${a.doctor_name}</strong></div>
+  <div class="row"><span>Department:</span> <strong>${a.specialty}</strong></div>
+  <div class="row"><span>Date & Slot:</span> <strong>${a.date} at ${a.time_slot}</strong></div>
+  <div class="row"><span>Clinical Notes:</span> <strong>${a.symptoms || 'General Checkup'}</strong></div>
+  <div class="instructions">
+    <strong>Hospital Instructions:</strong>
+    <ul style="margin:6px 0 0 16px; padding:0;">
+      <li>Please report to Counter 3 at least 15 minutes prior to ${a.time_slot}.</li>
+      <li>Carry this confirmation slip along with a valid photo ID.</li>
+      <li>To cancel or reschedule, consult HealthBot in your portal.</li>
+    </ul>
+  </div>
+  <div style="text-align:center; margin-top:18px;">
+    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  </div>
+</div>
+</body>
+</html>`;
+    },
+
     saveAppointments(list) {
         localStorage.setItem("carepulse_mock_appts", JSON.stringify(list));
     },
@@ -734,7 +864,7 @@ const ChatBot = {
             card.actions.forEach(act => {
                 if (act.action.startsWith("download_memo:")) {
                     const id = act.action.split(":")[1];
-                    actionsHtml += `<a href="/api/memo/${id}?format=download" class="btn btn-success btn-sm" download>📥 Download Memo</a>`;
+                    actionsHtml += `<button class="btn btn-success btn-sm" onclick="AppointmentsManager.downloadMemo('${id}')">📥 Download Memo</button>`;
                 } else if (act.action.startsWith("print_memo:")) {
                     const id = act.action.split(":")[1];
                     actionsHtml += `<button class="btn btn-outline btn-sm" onclick="AppointmentsManager.viewHtmlMemo('${id}')">🖨️ View / Print</button>`;
@@ -760,9 +890,9 @@ const ChatBot = {
         box.innerHTML = `
             <span>📄 Official Booking Confirmation Memo Ready</span>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <a href="/api/memo/${memoId}?format=download" class="btn btn-success btn-sm" download>
+                <button class="btn btn-success btn-sm" onclick="AppointmentsManager.downloadMemo('${memoId}')">
                     📥 Download Memo (.TXT)
-                </a>
+                </button>
                 <button class="btn btn-outline btn-sm" onclick="AppointmentsManager.viewHtmlMemo('${memoId}')">
                     🖨️ View & Print Memo Slip
                 </button>
@@ -958,9 +1088,9 @@ const AppointmentsManager = {
                     <td><span class="status-badge ${statusClass}">${a.status}</span></td>
                     <td>
                         <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            <a href="/api/memo/${a.id}?format=download" class="btn btn-outline btn-sm" download title="Download Memo">
+                            <button class="btn btn-outline btn-sm" onclick="AppointmentsManager.downloadMemo('${a.id}')" title="Download Memo">
                                 📥 Memo
-                            </a>
+                            </button>
                             <button class="btn btn-outline btn-sm" onclick="AppointmentsManager.viewHtmlMemo('${a.id}')" title="Print Slip">
                                 🖨️ Print
                             </button>
@@ -992,12 +1122,52 @@ const AppointmentsManager = {
         }
     },
 
-    viewHtmlMemo(appointmentId) {
+    async downloadMemo(appointmentId) {
+        try {
+            const memoBase = (window.location.protocol.startsWith("http") && window.location.port && window.location.port !== "8000")
+                ? `http://${window.location.hostname}:8000`
+                : "";
+            const res = await fetch(`${memoBase}/api/memo/${appointmentId}?format=download`);
+            if (res.ok) {
+                const blob = await res.blob();
+                this._triggerBlobDownload(blob, `CarePulse-Memo-${appointmentId}.txt`);
+                return;
+            }
+        } catch (_) {}
+
+        const text = LocalFallbackEngine.getTextMemo(appointmentId);
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        this._triggerBlobDownload(blob, `CarePulse-Memo-${appointmentId}.txt`);
+    },
+
+    _triggerBlobDownload(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    },
+
+    async viewHtmlMemo(appointmentId) {
         if (!this.memoModal || !this.memoFrame) return;
-        const memoBase = (window.location.protocol.startsWith("http") && window.location.port && window.location.port !== "8000")
-            ? `http://${window.location.hostname}:8000`
-            : "";
-        this.memoFrame.src = `${memoBase}/api/memo/${appointmentId}?format=html`;
+        try {
+            const memoBase = (window.location.protocol.startsWith("http") && window.location.port && window.location.port !== "8000")
+                ? `http://${window.location.hostname}:8000`
+                : "";
+            const res = await fetch(`${memoBase}/api/memo/${appointmentId}?format=html`);
+            if (res.ok) {
+                const html = await res.text();
+                this.memoFrame.srcdoc = html;
+                this.memoModal.showModal();
+                return;
+            }
+        } catch (_) {}
+
+        const html = LocalFallbackEngine.getHtmlMemo(appointmentId);
+        this.memoFrame.srcdoc = html;
         this.memoModal.showModal();
     }
 };
@@ -1115,9 +1285,9 @@ const AdminDashboard = {
                     <td><span class="status-badge ${statusClass}">${a.status}</span></td>
                     <td>
                         <div style="display:flex; gap:6px;">
-                            <a href="/api/memo/${a.id}?format=download" class="btn btn-outline btn-sm" download title="Download Memo">
+                            <button class="btn btn-outline btn-sm" onclick="AppointmentsManager.downloadMemo('${a.id}')" title="Download Memo">
                                 📥
-                            </a>
+                            </button>
                             <button class="btn btn-outline btn-sm" onclick="AppointmentsManager.viewHtmlMemo('${a.id}')" title="Print Slip">
                                 🖨️
                             </button>
